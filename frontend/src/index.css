@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-base:       #0d0f1e;
+  --bg-surface:    #141627;
+  --bg-elevated:   #1a1d2e;
+  --border:        #2a2d3e;
+  --teal:          #0F6E56;
+  --teal-mid:      #1D9E75;
+  --teal-light:    #E1F5EE;
+  --text-primary:  #ffffff;
+  --text-muted:    #5a5f7a;
+  --text-hint:     #3a3f5a;
+  --danger:        #E24B4A;
+  --amber:         #BA7517;
+  --route-line:    #4FC3F7;
+}
+
+html, body, #root {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+}
+
+h1, h2, h3, .logo, .syne {
+  font-family: 'Syne', sans-serif;
+}
+
+/* Global Button Styles */
+.btn-primary {
+  background: var(--teal);
+  color: var(--teal-light);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-primary:hover { background: #085041; }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: var(--bg-elevated); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border: 0.5px solid var(--danger);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-danger:hover { background: rgba(226,75,74,0.08); }
+
+/* Form Styles */
+.form-input {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus {
+  border-color: var(--teal-mid);
+  box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.12);
+}
+.form-input::placeholder { color: var(--text-hint); }
+
+.form-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: block;
+}

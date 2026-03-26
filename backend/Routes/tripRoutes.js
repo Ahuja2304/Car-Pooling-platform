@@ -1,0 +1,16 @@
+const express = require("express");
+const { isSignedin } = require("../Controllers/authenticate");
+
+var router = express.Router()
+const { drive, ride, cancelTrip, tripDone, tripHistory, activeTrip, isDriver, availableTrips, joinTrip } = require("../Controllers/trip.js");
+
+router.post("/trip/drive", isSignedin, drive)  // Swagger Api done
+router.post("/trip/ride", isSignedin, ride)    //Swagger Api done
+router.delete("/trip", isSignedin, cancelTrip) // Swagger Api pending
+router.post("/trip/done", isSignedin, tripDone) // Swagger Api pending
+router.get("/trip/history", isSignedin, tripHistory)// Swagger Api pending
+router.get("/trip/available", isSignedin, availableTrips)
+router.post("/trip/join/:tripId", isSignedin, joinTrip)
+router.get("/trip/isdriver", isSignedin, isDriver) 
+router.get("/trip/activetrip", isSignedin, activeTrip)
+module.exports = router;
