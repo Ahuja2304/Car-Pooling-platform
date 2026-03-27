@@ -37,6 +37,7 @@ const tripRoutes = require("./Routes/tripRoutes");
 //PORT
 
 
+let lastDbError = null;
 mongoose.connect(process.env.DATABASE_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
