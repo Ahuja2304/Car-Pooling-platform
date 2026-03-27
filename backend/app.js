@@ -79,9 +79,11 @@ io.on('connection', (socket) => {
 // Make io accessible in controllers
 app.set('io', io);
 
-server.listen(process.env.PORT || 8000, () => {
-    console.log(`Listening on port ${process.env.PORT || 8000}`);
-})
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    server.listen(process.env.PORT || 8000, () => {
+        console.log(`Listening on port ${process.env.PORT || 8000}`);
+    });
+}
 
 module.exports = app;
 // MongoDb connection
