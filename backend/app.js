@@ -11,9 +11,10 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config()
 const { Client } = require("@googlemaps/google-maps-services-js");
+const path = require('path');
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
-const swaggerDocument = YAML.load('./swagger.yaml');
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 
 
 
@@ -37,8 +38,14 @@ const tripRoutes = require("./Routes/tripRoutes");
 
 
 // MongoDb connection
-var db=mongoose.connect(process.env.DATABASE_URI).then(console.log("DB connected"))
-//.catch(error => console.log(error));
+mongoose.connect(process.env.DATABASE_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log("DB connected"))
+  .catch(err => {
+      console.error("DB Connection Error:", err);
+      // In a serverless environment, we might want to log this and continue or fail gracefully
+  });
 
 //Middleware
 app.use(bodyparser.json())
