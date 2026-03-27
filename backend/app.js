@@ -38,10 +38,14 @@ const tripRoutes = require("./Routes/tripRoutes");
 
 
 let lastDbError = null;
+const maskedUri = process.env.DATABASE_URI ? process.env.DATABASE_URI.replace(/\/\/[^:]+:[^@]+@/, "//***:***@") : "MISSING";
+console.log("Connecting to:", maskedUri);
+
 mongoose.connect(process.env.DATABASE_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    family: 4
+    family: 4,
+    serverSelectionTimeoutMS: 5000 // 5 seconds timeout
 }).then(() => {
     console.log("DB connected");
     lastDbError = null;
