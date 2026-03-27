@@ -178,6 +178,16 @@ exports.ride = (req, res) => {
                             user.trip_role_driver = false;
                             user.save((err) => {
                                 if (err) return res.status(500).end();
+                                
+                                // Emit socket event
+                                const io = req.app.get('io');
+                                if (io) {
+                                    io.to(String(savedTrip._id)).emit('riderJoined', {
+                                        tripId: savedTrip._id,
+                                        riderName: `${user.name} ${user.lastname}`
+                                    });
+                                }
+
                                 return res.status(200).json(savedTrip);
                             })
                         });
@@ -234,9 +244,18 @@ exports.cancelTrip = (req, res) => {
                         }
                     }
                 }
+                const activeTripId = user.active_trip;
                 user.active_trip = null;
                 user.trip_role_driver = null;
                 user.save((err) => {
+                    // Emit socket event
+                    const io = req.app.get('io');
+                    if (io && activeTripId) {
+                        io.to(String(activeTripId)).emit('tripUpdated', {
+                            type: 'cancel',
+                            message: user.trip_role_driver ? 'Trip cancelled by driver' : 'A rider left the trip'
+                        });
+                    }
                     return res.status(200).end();
                 });
             });
@@ -279,6 +298,16 @@ exports.tripDone = (req, res) => {
                         }
                     })
                 });
+                
+                // Emit socket event
+                const io = req.app.get('io');
+                if (io) {
+                    io.to(String(trip._id)).emit('tripUpdated', {
+                        type: 'done',
+                        message: 'Trip completed successfully'
+                    });
+                }
+
                 return res.status(200).end();
             })
         }
@@ -300,7 +329,8 @@ exports.availableTrips = (req, res) => {
     Trip.find({ 
         completed: false, 
         available_riders: true,
-        driver: { $ne: req.auth._id }
+        driver: { $ne: req.auth._id },
+        riders: { $ne: req.auth._id }
     }, (err, trips) => {
         if (err) return res.status(500).json({ error: "Failed to fetch trips" });
         if (trips.length === 0) return res.status(200).json([]);
@@ -348,6 +378,16 @@ exports.joinTrip = (req, res) => {
                     user.trip_role_driver = false;
                     user.save((err) => {
                         if (err) return res.status(500).json({ error: "Failed to update user status" });
+                        
+                        // Emit socket event
+                        const io = req.app.get('io');
+                        if (io) {
+                            io.to(String(savedTrip._id)).emit('riderJoined', {
+                                tripId: savedTrip._id,
+                                riderName: `${user.name} ${user.lastname}`
+                            });
+                        }
+
                         return res.status(200).json(savedTrip);
                     });
                 });

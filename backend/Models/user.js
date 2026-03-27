@@ -48,12 +48,19 @@ const userSchema = new schema({
     },
     trip_role_driver: {
         type: Boolean
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true
     }
 }, { timestamps: true });
 userSchema.virtual("password").set(function (password) {
-    this._password = password,
+    if (password) {
+        this._password = password;
         this.salt = uuidv1();
-    this.encry_password = this.securePassword(password);
+        this.encry_password = this.securePassword(password);
+    }
 })
 /*.get(function(){
     return this._password;

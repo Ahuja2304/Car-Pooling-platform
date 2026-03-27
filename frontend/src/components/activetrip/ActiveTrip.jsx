@@ -1,6 +1,7 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState, useEffect, useCallback } from 'react';
 import { Button, Col, Container, Row, Badge, Spinner } from 'react-bootstrap';
 import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
 import RideMap from '../RideMap';
 
 import './ActiveTrip.css'
@@ -19,6 +20,22 @@ export default function ActiveTrip({ setActiveTrip }) {
         return date + ' @ ' + time[0] + ':' + time[1]
     }
 
+    const fetchData = useCallback(() => {
+        fetch(import.meta.env.VITE_END_POINT + '/trip/activetrip', {
+            method: 'GET',
+            headers: { 'Coookie': Cookies.get('tokken') }
+        }).then((response) => {
+            if (response.ok) return response.json();
+            throw new Error("Failed to fetch active trip");
+        }).then((responseJson) => {
+            setTripData(responseJson)
+            setLoading(false)
+        }).catch((error) => {
+            console.error(error)
+            setLoading(false)
+        });
+    }, []);
+
     useEffect(() => {
         fetch(import.meta.env.VITE_END_POINT + '/trip/isdriver', {
             method: 'GET',
@@ -29,19 +46,41 @@ export default function ActiveTrip({ setActiveTrip }) {
             if (responseJson.isdriver) setIsDriver(true)
         }).catch((error) => console.error(error));
 
-        fetch(import.meta.env.VITE_END_POINT + '/trip/activetrip', {
-            method: 'GET',
-            headers: { 'Coookie': Cookies.get('tokken') }
-        }).then((response) => {
-            if (response.ok) return response.json();
-        }).then((responseJson) => {
-            setTripData(responseJson)
-            setLoading(false)
-        }).catch((error) => {
-            console.error(error)
-            setLoading(false)
+        fetchData();
+    }, [fetchData]);
+
+    // Socket.io for real-time updates
+    useEffect(() => {
+        if (!tripData?._id) return;
+
+        const socket = io(import.meta.env.VITE_END_POINT.replace('/api', ''));
+        
+        socket.on('connect', () => {
+            console.log('Connected to socket server');
+            socket.emit('joinTrip', String(tripData._id));
         });
-    }, []);
+
+        socket.on('riderJoined', (data) => {
+            console.log('New rider joined:', data.riderName);
+            // Re-fetch data to update riders list and route
+            fetchData();
+        });
+
+        socket.on('tripUpdated', (data) => {
+            console.log('Trip updated:', data.message);
+            alert(data.message);
+            if (data.type === 'cancel' || data.type === 'done') {
+                setActiveTrip(null);
+                window.location.reload();
+            } else {
+                fetchData();
+            }
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [tripData?._id, fetchData, setActiveTrip]);
 
     const handleCancel = (e) => {
         e.preventDefault();
@@ -78,12 +117,11 @@ export default function ActiveTrip({ setActiveTrip }) {
     );
 
     return (
-        <div style={{ background: 'var(--bg-base)', minHeight: 'calc(100vh - 64px)', padding: '40px 24px' }}>
-            <Container>
+        <div style={{ background: 'var(--bg-base)', minHeight: 'calc(100vh - 64px)' }}>
+            <Container className="responsive-container" style={{ paddingTop: '24px', paddingBottom: '40px' }}>
                 <Row className="gy-4">
-                    {/* Left Column: Map */}
-                    <Col lg={7}>
-                        <div style={{ height: '400px', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--border)', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+                    <Col lg={7} md={12}>
+                        <div className="active-trip-map-container" style={{ borderRadius: 24, overflow: 'hidden', border: '1px solid var(--border)', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
                             <RideMap
                                 origin={tripData?.source}
                                 destination={tripData?.destination}
@@ -94,11 +132,11 @@ export default function ActiveTrip({ setActiveTrip }) {
                     </Col>
 
                     {/* Right Column: Details */}
-                    <Col lg={5}>
+                    <Col lg={5} md={12}>
                         <div style={{ background: 'var(--bg-surface)', border: '0.5px solid var(--border)', borderRadius: 24, padding: 32 }}>
                              <div className="d-flex justify-content-between align-items-start mb-4">
                                 <div>
-                                    <h1 style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, color: '#fff', margin: 0 }}>My Ride</h1>
+                                    <h1 style={{ fontFamily: 'Syne', fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>My Ride</h1>
                                     <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>Trip ID: {tripData?._id?.slice(-6).toUpperCase()}</p>
                                 </div>
                                 <div style={{ background: 'var(--teal)', color: 'var(--teal-light)', padding: '6px 14px', borderRadius: 99, fontSize: 12, fontWeight: 700, textTransform: 'uppercase' }}>
@@ -108,11 +146,11 @@ export default function ActiveTrip({ setActiveTrip }) {
 
                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 32 }}>
                                 <div style={{ background: 'var(--bg-elevated)', padding: '12px 8px', borderRadius: 12, textAlign: 'center', border: '0.5px solid var(--border)' }}>
-                                    <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{routeInfo?.distanceKm ?? '—'} km</div>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{routeInfo?.distanceKm ?? '—'} km</div>
                                     <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Dist</div>
                                 </div>
                                 <div style={{ background: 'var(--bg-elevated)', padding: '12px 8px', borderRadius: 12, textAlign: 'center', border: '0.5px solid var(--border)' }}>
-                                    <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{routeInfo?.durationMin ?? '—'} min</div>
+                                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{routeInfo?.durationMin ?? '—'} min</div>
                                     <div style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Time</div>
                                 </div>
                                 <div style={{ background: 'var(--bg-elevated)', padding: '12px 8px', borderRadius: 12, textAlign: 'center', border: '0.5px solid var(--border)' }}>
@@ -161,7 +199,7 @@ export default function ActiveTrip({ setActiveTrip }) {
                                     <label className="form-label">Joined Riders</label>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                                         {tripData?.riders?.length > 0 ? tripData.riders.map((r, i) => (
-                                            <div key={i} style={{ background: 'var(--bg-elevated)', padding: '4px 12px', borderRadius: 8, fontSize: 12, color: '#fff', border: '0.5px solid var(--border)' }}>
+                                            <div key={i} style={{ background: 'var(--bg-elevated)', padding: '4px 12px', borderRadius: 8, fontSize: 12, color: 'var(--text-primary)', border: '0.5px solid var(--border)' }}>
                                                 {r}
                                             </div>
                                         )) : <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>No one joined yet</span>}

@@ -113,15 +113,15 @@ export default function TripHistory() {
         return (
             <div style={{ textAlign: 'center', padding: '64px 32px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <svg width="120" height="90" viewBox="0 0 80 60" fill="none">
-                    <rect x="10" y="25" width="60" height="22" rx="6" fill="#1a1d2e" stroke="#2a2d3e" strokeWidth="1"/>
-                    <rect x="18" y="18" width="35" height="14" rx="4" fill="#141627" stroke="#2a2d3e" strokeWidth="1"/>
-                    <circle cx="22" cy="47" r="6" fill="#0F6E56"/>
-                    <circle cx="22" cy="47" r="3" fill="#E1F5EE"/>
-                    <circle cx="58" cy="47" r="6" fill="#0F6E56"/>
-                    <circle cx="58" cy="47" r="3" fill="#E1F5EE"/>
-                    <line x1="0" y1="55" x2="80" y2="55" stroke="#2a2d3e" strokeWidth="1" strokeDasharray="6,4"/>
+                    <rect x="10" y="25" width="60" height="22" rx="6" fill="var(--bg-elevated)" stroke="var(--border)" strokeWidth="1"/>
+                    <rect x="18" y="18" width="35" height="14" rx="4" fill="var(--bg-surface)" stroke="var(--border)" strokeWidth="1"/>
+                    <circle cx="22" cy="47" r="6" fill="var(--teal)"/>
+                    <circle cx="22" cy="47" r="3" fill="var(--teal-light)"/>
+                    <circle cx="58" cy="47" r="6" fill="var(--teal)"/>
+                    <circle cx="58" cy="47" r="3" fill="var(--teal-light)"/>
+                    <line x1="0" y1="55" x2="80" y2="55" stroke="var(--border)" strokeWidth="1" strokeDasharray="6,4"/>
                 </svg>
-                <p style={{ fontFamily: 'Syne', fontSize: 20, fontWeight: 700, color: '#fff', marginTop: 24, marginBottom: 8 }}>
+                <p style={{ fontFamily: 'Syne', fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginTop: 24, marginBottom: 8 }}>
                     No rides yet
                 </p>
                 <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 32, maxWidth: '240px', lineHeight: '1.5' }}>
@@ -139,7 +139,7 @@ export default function TripHistory() {
 
     return (
         <div style={{ padding: '32px 24px', maxWidth: '800px', margin: '0 auto' }}>
-            <h2 style={{ fontFamily: 'Syne', fontSize: '24px', fontWeight: 800, marginBottom: '24px', color: '#fff' }}>Trip History</h2>
+            <h2 style={{ fontFamily: 'Syne', fontSize: '24px', fontWeight: 800, marginBottom: '24px', color: 'var(--text-primary)' }}>Trip History</h2>
             {tripDetails.length === 0 ? <EmptyState /> :
                 <div style={{ display: 'grid', gap: '16px' }}>
                     {tripDetails.map((data, index) => (

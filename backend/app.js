@@ -46,18 +46,42 @@ app.use(cookieparser())
 app.use(cors())
 
 //Routes
+app.get("/", (req, res) => res.status(200).send("Backend is up and running"));
 app.use("/api", authRoutes);
 app.use("/api", allusersRoutes);
 //app.use("/api", userRoutes);
 app.use("/api", tripRoutes);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.listen(process.env.PORT || 8000, () => {
-    console.log(`Listening on a port`);
+const http = require('http');
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
+
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+    
+    socket.on('joinTrip', (tripId) => {
+        socket.join(tripId);
+        console.log(`User ${socket.id} joined trip room: ${tripId}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
+
+// Make io accessible in controllers
+app.set('io', io);
+
+server.listen(process.env.PORT || 8000, () => {
+    console.log(`Listening on port ${process.env.PORT || 8000}`);
 })
 
-
-
-    
 module.exports = app;
 // MongoDb connection

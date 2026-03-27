@@ -30,8 +30,8 @@ export default function RideCard({ ride, onJoin }) {
           <p style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>
             {formatLoc(ride.source, ride.sourceName)}
           </p>
-          <p style={{ fontSize: 18, fontFamily: 'Syne', fontWeight: 700, color: '#fff' }}>
-            → {formatLoc(ride.destination, ride.destinationName)}
+          <p style={{ fontSize: 18, fontFamily: 'Syne', fontWeight: 700, color: 'var(--text-primary)' }}>
+            → {formatLoc(ride.source, ride.sourceName)}
           </p>
         </div>
         {farePerPerson && (
@@ -46,7 +46,11 @@ export default function RideCard({ ride, onJoin }) {
       </div>
 
       {/* Info pills */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+      <div className="ride-card-grid" style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(4, 1fr)', 
+        gap: 8 
+      }}>
         {[
           { val: new Date(ride.dateTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), lbl: 'Departs' },
           { val: distance ? `${Math.round(distance)} km` : '—', lbl: 'Distance' },
@@ -58,7 +62,7 @@ export default function RideCard({ ride, onJoin }) {
             border: '0.5px solid var(--border)',
             borderRadius: 10, padding: '8px 6px', textAlign: 'center'
           }}>
-            <span style={{ fontSize: 13, fontWeight: 500, color: '#fff', display: 'block' }}>{val}</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', display: 'block' }}>{val}</span>
             <span style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{lbl}</span>
           </div>
         ))}
@@ -75,7 +79,7 @@ export default function RideCard({ ride, onJoin }) {
           {ride.driverName?.[0]?.toUpperCase() ?? 'D'}
         </div>
         <div style={{ flex: 1 }}>
-          <p style={{ fontSize: 13, fontWeight: 500, color: '#fff' }}>{ride.driverName ?? 'Driver'}</p>
+          <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>{ride.driverName ?? 'Driver'}</p>
           <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Driver · {ride.vehicleDetails}</p>
         </div>
         <button

@@ -3,13 +3,16 @@ import Cookies from 'js-cookie';
 import * as AiIcons from 'react-icons/ai';
 import * as FaIcons from 'react-icons/fa';
 import * as MdIcons from 'react-icons/md';
+import { FiSun, FiMoon } from 'react-icons/fi';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { IconContext } from 'react-icons';
+import { useTheme } from '../../libraries/ThemeContext';
 import './Navbar.css';
 
 export default function Navbar({ setToken, activeTrip, name }) {
     const location = useLocation();
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [sidebar, setSidebar] = useState(false);
     const showSidebar = () => setSidebar(!sidebar);
 
@@ -65,15 +68,54 @@ export default function Navbar({ setToken, activeTrip, name }) {
     ];
 
     if (!Cookies.get('tokken')) return (
-        <div className='navbar-container'>
-            <Link to='/' className='tacs-logo'>
-                <RouteIcon /> TACS.
-            </Link>
-            <div className="navbar-right">
-                <Link to='/login' className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>Login</Link>
-                <Link to='/signup' className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px' }}>Sign Up</Link>
+        <>
+            <div className='navbar-container'>
+                <div className="navbar-left">
+                    <button className="menu-bars-hamburger-btn" onClick={showSidebar} aria-label="Open Menu">
+                        <FaIcons.FaBars />
+                    </button>
+                    <Link to='/' className='tacs-logo'>
+                        <RouteIcon /> TACS.
+                    </Link>
+                </div>
+                <div className="navbar-right">
+                    <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+                        {theme === 'light' ? <FiMoon /> : <FiSun />}
+                    </button>
+                    <Link to='/login' className="btn-secondary nav-auth-btn" style={{ padding: '8px 16px', fontSize: '13px' }}>Login</Link>
+                    <Link to='/signup' className="btn-primary nav-auth-btn" style={{ padding: '8px 16px', fontSize: '13px' }}>Sign Up</Link>
+                </div>
             </div>
-        </div>
+
+            {/* Logged Out Sidebar */}
+            <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+                <div className="sidebar-header">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '20px' }}>
+                        <button className="theme-toggle-sidebar" onClick={toggleTheme}>
+                            {theme === 'light' ? <FiMoon /> : <FiSun />}
+                        </button>
+                        <div style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={showSidebar}>
+                            <AiIcons.AiOutlineClose size={20} />
+                        </div>
+                    </div>
+                    <div style={{
+                        width: 48, height: 48, borderRadius: '12px',
+                        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--teal)', fontSize: 20
+                    }}>
+                        <RouteIcon />
+                    </div>
+                    <div className="sidebar-name">Welcome to TACS</div>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>Sustainable carpooling for students</p>
+                </div>
+
+                <div className="sidebar-nav-items" onClick={showSidebar} style={{ padding: '0 24px' }}>
+                    <Link to='/login' className="btn-secondary w-100 mb-2" style={{ textAlign: 'center' }}>Login</Link>
+                    <Link to='/signup' className="btn-primary w-100" style={{ textAlign: 'center' }}>Sign Up</Link>
+                </div>
+            </nav>
+        </>
     );
 
     return (
@@ -81,7 +123,9 @@ export default function Navbar({ setToken, activeTrip, name }) {
             <IconContext.Provider value={{ color: 'inherit' }}>
                 <div className='navbar-container'>
                     <div className="navbar-left">
-                        <FaIcons.FaBars className="menu-bars-hamburger" onClick={showSidebar} />
+                        <button className="menu-bars-hamburger-btn" onClick={showSidebar} aria-label="Open Menu">
+                            <FaIcons.FaBars />
+                        </button>
                         <Link to='/' className='tacs-logo'>
                             <RouteIcon /> TACS.
                         </Link>
@@ -100,9 +144,12 @@ export default function Navbar({ setToken, activeTrip, name }) {
                     </div>
 
                     <div className="navbar-right">
+                        <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}>
+                            {theme === 'light' ? <FiMoon /> : <FiSun />}
+                        </button>
                         <div className="user-profile-small">
                             <div className="avatar-circle-sm">{initials}</div>
-                            <span>{name}</span>
+                            <span className="user-name-header">{name}</span>
                         </div>
                         <FaIcons.FaSignOutAlt className="logout-icon" onClick={handleLogOut} title="Logout" />
                     </div>
@@ -111,8 +158,13 @@ export default function Navbar({ setToken, activeTrip, name }) {
                 {/* Sidebar Overlay */}
                 <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
                     <div className="sidebar-header">
-                        <div style={{ alignSelf: 'flex-end', cursor: 'pointer', color: 'var(--text-muted)' }} onClick={showSidebar}>
-                            <AiIcons.AiOutlineClose size={20} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '10px' }}>
+                            <button className="theme-toggle-sidebar" onClick={toggleTheme}>
+                                {theme === 'light' ? <FiMoon /> : <FiSun />}
+                            </button>
+                            <div style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={showSidebar}>
+                                <AiIcons.AiOutlineClose size={20} />
+                            </div>
                         </div>
                         <div style={{
                             width: 64, height: 64, borderRadius: '50%',

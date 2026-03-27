@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 //const distance = require('google-distance-matrix')
 
 var router = express.Router()
-const { signout, signup, signin, isSignedin,delete_user } = require("../Controllers/authenticate.js");
+const { signout, signup, signin, isSignedin, delete_user, googleSignin } = require("../Controllers/authenticate.js");
 
 //import {signout, signup, signin, isSignedin} from "../Controllers/authenticate.js";
 
@@ -59,6 +59,7 @@ router.post("/signin", [
 
 router.delete("/delete",isSignedin,delete_user);
 router.get("/signout", signout)
+router.post("/google-signin", googleSignin)
 
 // router.get("/test",isSignedin,(req,res)=>{
 // res.json(req.auth);

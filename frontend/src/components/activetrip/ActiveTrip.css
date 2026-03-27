@@ -32,8 +32,8 @@
     width: 95%;
     height: 20%;
     
-    background-color: rgb(250, 246, 246);
-    border: .125rem solid black;
+    background-color: var(--bg-surface);
+    border: .125rem solid var(--border);
 }
 
 #cancelTripButton{
@@ -46,7 +46,7 @@
     margin: 1.25rem;
 
     font-size: 3.25rem;
-    color : #060b26;
+    color : var(--text-primary);
 }
 
 .trip-attributes{

@@ -157,18 +157,18 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
             border: '0.5px solid var(--border)',
             borderRadius: 10, padding: '10px 8px', textAlign: 'center'
         }}>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', display: 'block' }}>{val}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', display: 'block' }}>{val}</span>
             <span style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{lbl}</span>
         </div>
     );
 
     return (
-        <Container fluid style={{ padding: '0 40px', background: 'var(--bg-base)', minHeight: 'calc(100vh - 64px)' }}>
-            <Row className="gy-4 gx-5" style={{ paddingTop: '32px' }}>
+        <Container fluid className="responsive-container" style={{ background: 'var(--bg-base)', minHeight: 'calc(100vh - 64px)' }}>
+            <Row className="gy-4 gx-5" style={{ paddingTop: '24px' }}>
                 {/* Form Column */}
-                <Col md={5} lg={4} xl={4}>
-                    <div style={{ background: 'var(--bg-surface)', border: '0.5px solid var(--border)', borderRadius: 20, padding: 32, position: 'sticky', top: '32px' }}>
-                        <h2 style={{ fontFamily: 'Syne', fontSize: 24, fontWeight: 800, marginBottom: 24, color: '#fff' }}>
+                <Col md={5} lg={4} xl={4} className="order-1 order-md-1">
+                    <div style={{ background: 'var(--bg-surface)', border: '0.5px solid var(--border)', borderRadius: 20, padding: '24px 20px', position: 'sticky', top: '16px' }}>
+                        <h2 className="mobile-text-center" style={{ fontFamily: 'Syne', fontSize: '1.4rem', fontWeight: 800, marginBottom: 20, color: 'var(--text-primary)' }}>
                             {type === 'drive' ? 'Post a New Ride' : 'Find a Ride'}
                         </h2>
 
@@ -245,10 +245,10 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
                 </Col>
 
                 {/* Main Content Column */}
-                <Col md={7} lg={8} xl={8}>
+                <Col md={7} lg={8} xl={8} className="order-2 order-md-2 mb-5">
                     {type === 'ride' ? (
                         <div>
-                             <h3 style={{ fontFamily: 'Syne', fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 24 }}>
+                             <h3 style={{ fontFamily: 'Syne', fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 24 }}>
                                 Available Rides
                             </h3>
                             {loadingRides ? (
@@ -269,7 +269,7 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gap: '20px' }}>
-                            <div style={{ height: '500px', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
+                            <div className="mobile-mt-4 drive-ride-map-container" style={{ borderRadius: 24, overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
                                 <RideMap 
                                     origin={originCoords}
                                     destination={destCoords}
@@ -277,7 +277,7 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
                                     onRouteLoaded={setRouteInfo}
                                 />
                                  {!originCoords && (
-                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(13, 15, 30, 0.7)', backdropFilter: 'blur(4px)', zIndex: 500, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(var(--bg-base-rgb), 0.7)', backdropFilter: 'blur(4px)', zIndex: 500, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-primary)' }}>
                                         <div className="avatar-circle-sm" style={{ width: 60, height: 60, fontSize: 24, marginBottom: 16 }}>
                                             <AiIcons.AiOutlineCompass />
                                         </div>
@@ -291,7 +291,7 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
                                 <div style={{ background: 'var(--bg-surface)', border: '0.5px solid var(--border)', borderRadius: 20, padding: 24 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                                         <div>
-                                            <h4 style={{ fontFamily: 'Syne', fontSize: 18, fontWeight: 700, color: '#fff', margin: 0 }}>Fare Breakdown</h4>
+                                            <h4 style={{ fontFamily: 'Syne', fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Fare Breakdown</h4>
                                             <p style={{ fontSize: 12, color: 'var(--text-muted)', margin: 0 }}>Adjust the total trip cost to split between passengers</p>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
@@ -318,7 +318,7 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
                                             </div>
                                         </div>
                                         <div style={{ background: 'var(--bg-base)', padding: '16px 20px', borderRadius: 12, border: '1px dashed var(--border)' }}>
-                                            <p style={{ fontSize: 13, color: '#fff', marginBottom: 4 }}>
+                                            <p style={{ fontSize: 13, color: 'var(--text-primary)', marginBottom: 4 }}>
                                                 ₹{totalTripPrice} split by {riders} {riders === 1 ? 'passenger' : 'passengers'}
                                             </p>
                                             <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>
