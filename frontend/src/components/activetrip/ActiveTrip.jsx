@@ -21,7 +21,9 @@ export default function ActiveTrip({ setActiveTrip }) {
     }
 
     const fetchData = useCallback(() => {
-        fetch(import.meta.env.VITE_END_POINT + '/trip/activetrip', {
+        const url = (import.meta.env.VITE_END_POINT || "") + '/trip/activetrip';
+        console.log("Fetching active trip from:", url);
+        fetch(url, {
             method: 'GET',
             headers: { 'Coookie': Cookies.get('tokken') }
         }).then((response) => {
@@ -84,7 +86,9 @@ export default function ActiveTrip({ setActiveTrip }) {
 
     const handleCancel = (e) => {
         e.preventDefault();
-        return fetch(import.meta.env.VITE_END_POINT + '/trip', {
+        const url = (import.meta.env.VITE_END_POINT || "") + '/trip';
+        console.log("Cancelling trip via:", url);
+        return fetch(url, {
             method: 'DELETE',
             headers: { 'Coookie': Cookies.get('tokken') },
         }).then((response) => {
@@ -98,7 +102,9 @@ export default function ActiveTrip({ setActiveTrip }) {
 
     const handleDone = (e) => {
         e.preventDefault();
-        return fetch(import.meta.env.VITE_END_POINT + '/trip/done', {
+        const url = (import.meta.env.VITE_END_POINT || "") + '/trip/done';
+        console.log("Marking trip as done via:", url);
+        return fetch(url, {
             method: 'POST',
             headers: { 'Coookie': Cookies.get('tokken') },
         }).then((response) => {
