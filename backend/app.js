@@ -37,15 +37,17 @@ const tripRoutes = require("./Routes/tripRoutes");
 //PORT
 
 
-// MongoDb connection
+let lastDbError = null;
 mongoose.connect(process.env.DATABASE_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log("DB connected"))
-  .catch(err => {
-      console.error("DB Connection Error:", err);
-      // In a serverless environment, we might want to log this and continue or fail gracefully
-  });
+}).then(() => {
+    console.log("DB connected");
+    lastDbError = null;
+}).catch(err => {
+    console.error("DB Connection Error:", err);
+    lastDbError = err.message;
+});
 
 //Middleware
 app.use(bodyparser.json())
@@ -64,7 +66,8 @@ app.get("/api/status", (req, res) => {
     };
     res.json({ 
         status: states[status] || "unknown",
-        database: mongoose.connection.name || "not connected"
+        database: mongoose.connection.name || "not connected",
+        error: lastDbError
     });
 });
 app.use("/api", authRoutes);
