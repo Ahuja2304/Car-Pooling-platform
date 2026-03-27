@@ -54,6 +54,19 @@ app.use(cors())
 
 //Routes
 app.get("/", (req, res) => res.status(200).send("Backend is up and running"));
+app.get("/api/status", (req, res) => {
+    const status = mongoose.connection.readyState;
+    const states = {
+        0: "disconnected",
+        1: "connected",
+        2: "connecting",
+        3: "disconnecting"
+    };
+    res.json({ 
+        status: states[status] || "unknown",
+        database: mongoose.connection.name || "not connected"
+    });
+});
 app.use("/api", authRoutes);
 app.use("/api", allusersRoutes);
 //app.use("/api", userRoutes);
@@ -93,4 +106,3 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
 }
 
 module.exports = app;
-// MongoDb connection
