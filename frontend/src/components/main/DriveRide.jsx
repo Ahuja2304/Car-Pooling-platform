@@ -72,7 +72,9 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
 
     const fetchAvailableRides = () => {
         setLoadingRides(true);
-        fetch(import.meta.env.VITE_END_POINT + '/trip/available', {
+        const url = (import.meta.env.VITE_END_POINT || "") + '/trip/available';
+        console.log("Fetching available rides from:", url);
+        fetch(url, {
             headers: { 'Coookie': Cookies.get('tokken') }
         })
         .then(res => res.json())
@@ -104,7 +106,9 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
             dateTime: dateTime,
             max_riders: riders
         }
-        fetch(import.meta.env.VITE_END_POINT + '/trip/drive', {
+        const url = (import.meta.env.VITE_END_POINT || "") + '/trip/drive';
+        console.log("Posting ride to:", url);
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -129,7 +133,9 @@ export default function DriveRide({ type, setToken, setActiveTrip }) {
     }
 
     const handleJoinTrip = (tripId) => {
-        fetch(import.meta.env.VITE_END_POINT + `/trip/join/${tripId}`, {
+        const url = (import.meta.env.VITE_END_POINT || "") + `/trip/join/${tripId}`;
+        console.log("Joining trip via:", url);
+        fetch(url, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
